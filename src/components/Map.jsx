@@ -50,7 +50,7 @@ export default function Map() {
         />
       </div>
       <button onClick={handleMarkerClick}>Add Marker</button>
-      <LoadScript googleMapsApiKey="API_KEY">
+      <LoadScript googleMapsApiKey="AIzaSyBo8JkbyffU2Dbv8_MDEsvcOzymPyEL0xQ">
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={markerPosition}

@@ -39,17 +39,33 @@ function Map() {
 
   const generateShareLink = () => {
     const searchParams = new URLSearchParams();
-    searchParams.set("lat", latitude);
-    searchParams.set("lon", longitude);
 
-    const baseUrl = window.location.href.split('?')[0];
+    if (markerPosition) {
+      searchParams.set("lat", markerPosition.lat);
+      searchParams.set("lon", markerPosition.lng);
+    } else {
+      searchParams.set("lat", latitude);
+      searchParams.set("lon", longitude);
+    }
+
+    const baseUrl = window.location.href.split("?")[0];
     const shareUrl = `${baseUrl}?${searchParams.toString()}`;
 
     return shareUrl;
-  }
+  };
 
   useEffect(() => {
     getUserLocation();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const latParam = urlParams.get('lat');
+    const lonParam = urlParams.get('lon');
+
+    if (latParam && lonParam) {
+      setLatitude(latParam);
+      setLongitude(lonParam);
+      setMarkerPosition({ lat: parseFloat(latParam), lng: parseFloat(lonParam) });
+    }
   }, []);
 
   const handleLatitudeChange = (e) => {

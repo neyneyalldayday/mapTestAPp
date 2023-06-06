@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
 import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
 
+
+
+
 const containerStyle = {
   width: "400px",
   height: "400px",
 };
 
 function Map() {
+ 
+
   const [latitude, setLatitude] = useState("29.7255333");
   const [longitude, setLongitude] = useState("-98.4946");
   const [markerPosition, setMarkerPosition] = useState(null);
 
-  
+  const [userLocation, setUserLocation] = useState(null);
   const [showShareLink, setShowShareLink] = useState(false);
 
   const getUserLocation = () => {
@@ -19,9 +24,9 @@ function Map() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLatitude(latitude.toString());
-          setLongitude(longitude.toString());
-          setMarkerPosition({ lat: latitude, lng: longitude });
+          setLatitude(latitude);
+          setLongitude(longitude);
+          setUserLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.log("Error getting user location:", error);
@@ -31,6 +36,17 @@ function Map() {
       console.log("Geolocation is not supported by this browser.");
     }
   };
+
+  const generateShareLink = () => {
+    const searchParams = new URLSearchParams();
+    searchParams.set("lat", latitude);
+    searchParams.set("lon", longitude);
+
+    const baseUrl = window.location.href.split('?')[0];
+    const shareUrl = `${baseUrl}?${searchParams.toString()}`;
+
+    return shareUrl;
+  }
 
   useEffect(() => {
     getUserLocation();
@@ -45,26 +61,22 @@ function Map() {
   };
 
   const handleMarkerClick = () => {
-    if (latitude && longitude) {
+    if (userLocation) {
+      setMarkerPosition(userLocation);
+    } else if (latitude && longitude) {
       const position = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
       };
-
       setMarkerPosition(position);
     }
   };
 
-  const generateShareLink = () => {
-    const baseUrl = window.location.href.split("?")[0];
-    const shareUrl = `${baseUrl}?lat=${latitude}&lon${longitude}`;
-
-    return shareUrl;
-  }
-
   const handleShareButtonClick = () => {
     setShowShareLink(true);
-  };
+  }
+
+
 
   return (
     <div className="map-container">
@@ -97,7 +109,8 @@ function Map() {
         >
           {markerPosition && <Marker position={markerPosition} />}
         </GoogleMap>
-      </LoadScript>     
+      </LoadScript>
+      {markerPosition && <Marker position={markerPosition} />}
       <button onClick={handleShareButtonClick}>Share</button>
       {showShareLink && (
         <div>

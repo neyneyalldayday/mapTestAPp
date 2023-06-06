@@ -1,48 +1,42 @@
 import { useState, useEffect } from "react";
 import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
 
-
-
-
 const containerStyle = {
   width: "400px",
   height: "400px",
 };
 
 function Map() {
- 
-
   const [latitude, setLatitude] = useState("29.7255333");
   const [longitude, setLongitude] = useState("-98.4946");
   const [markerPosition, setMarkerPosition] = useState(null);
 
   const [userLocation, setUserLocation] = useState(null);
   const [showShareLink, setShowShareLink] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-
-
+  const [apiKey, setApiKey] = useState("");
 
   //fetch from the server
   const getUserLocation = () => {
-    fetch('/api/location')
-        .then((response) => response.json())
-        .then((data) => {
-          const { latitude, longitude, apiKey } = data;
-          console.log(latitude, longitude, apiKey)
-          setLatitude(parseFloat(latitude));
-          setLongitude(parseFloat(longitude));
-          setUserLocation({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
-          console.log(apiKey, "biiitch")
-          setApiKey(apiKey);
-        })
-        .catch((error) => {
-          console.log('Error getting user location', error);
+    fetch("/api/location")
+      .then((response) => response.json())
+      .then((data) => {
+        const { latitude, longitude, apiKey } = data;
+        console.log(latitude, longitude, apiKey);
+        setLatitude(parseFloat(latitude));
+        setLongitude(parseFloat(longitude));
+        setUserLocation({
+          lat: parseFloat(latitude),
+          lng: parseFloat(longitude),
         });
-
+        console.log(apiKey, "biiitch");
+        setApiKey(apiKey);
+      })
+      .catch((error) => {
+        console.log("Error getting user location", error);
+      });
   };
 
-
-//creating share link
+  //creating share link
   const generateShareLink = () => {
     const searchParams = new URLSearchParams();
 
@@ -60,25 +54,25 @@ function Map() {
     return shareUrl;
   };
 
-
   //use effect code for share link, the idea is to make the app show the map and pin on page load
   useEffect(() => {
     getUserLocation();
 
     const urlParams = new URLSearchParams(window.location.search);
-    const latParam = urlParams.get('lat');
-    const lonParam = urlParams.get('lon');
+    const latParam = urlParams.get("lat");
+    const lonParam = urlParams.get("lon");
 
     if (latParam && lonParam) {
       setLatitude(latParam);
       setLongitude(lonParam);
-      setMarkerPosition({ lat: parseFloat(latParam), lng: parseFloat(lonParam) });
+      setMarkerPosition({
+        lat: parseFloat(latParam),
+        lng: parseFloat(lonParam),
+      });
     }
   }, []);
 
-
-
-//handles the latitude value and longitude value
+  //handles the latitude value and longitude value
   const handleLatitudeChange = (e) => {
     setLatitude(e.target.value);
   };
@@ -87,29 +81,25 @@ function Map() {
     setLongitude(e.target.value);
   };
 
-
-
-//the function that runs when a user clicks add marker
+  //the function that runs when a user clicks add marker
   const handleMarkerClick = () => {
     if (userLocation) {
-      console.log(userLocation, "wooooof")
+      console.log(userLocation, "wooooof");
       setMarkerPosition(userLocation);
     } else if (latitude && longitude) {
-      console.log(latitude , longitude , "whats thiiis")
+      console.log(latitude, longitude, "whats thiiis");
       const position = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
       };
-      console.log(position)
+      console.log(position);
       setMarkerPosition(position);
     }
   };
 
   const handleShareButtonClick = () => {
     setShowShareLink(true);
-  }
-
-
+  };
 
   return (
     <div className="map-container">
@@ -148,7 +138,7 @@ function Map() {
       {showShareLink && (
         <div className="share-box">
           <p>Share this location</p>
-          <input type="text"  value={generateShareLink()} readOnly />
+          <input type="text" value={generateShareLink()} readOnly />
         </div>
       )}
     </div>

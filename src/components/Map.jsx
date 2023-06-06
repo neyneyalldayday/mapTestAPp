@@ -129,9 +129,9 @@ function Map() {
       {markerPosition && <Marker position={markerPosition} />}
       <button onClick={handleShareButtonClick}>Share</button>
       {showShareLink && (
-        <div>
+        <div className="share-box">
           <p>Share this location</p>
-          <input type="text" value={generateShareLink()} readOnly />
+          <input type="text"  value={generateShareLink()} readOnly />
         </div>
       )}
     </div>

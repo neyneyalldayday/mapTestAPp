@@ -18,25 +18,31 @@ function Map() {
 
   const [userLocation, setUserLocation] = useState(null);
   const [showShareLink, setShowShareLink] = useState(false);
+  const [apiKey, setApiKey] = useState('');
 
+
+
+  //fetch from the server
   const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-          setUserLocation({ lat: latitude, lng: longitude });
-        },
-        (error) => {
-          console.log("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
+    fetch('/api/location')
+        .then((response) => response.json())
+        .then((data) => {
+          const { latitude, longitude, apiKey } = data;
+          console.log(latitude, longitude, apiKey)
+          setLatitude(parseFloat(latitude));
+          setLongitude(parseFloat(longitude));
+          setUserLocation({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
+          console.log(apiKey, "biiitch")
+          setApiKey(apiKey);
+        })
+        .catch((error) => {
+          console.log('Error getting user location', error);
+        });
+
   };
 
+
+//creating share link
   const generateShareLink = () => {
     const searchParams = new URLSearchParams();
 
@@ -54,6 +60,8 @@ function Map() {
     return shareUrl;
   };
 
+
+  //use effect code for share link, the idea is to make the app show the map and pin on page load
   useEffect(() => {
     getUserLocation();
 
@@ -68,6 +76,9 @@ function Map() {
     }
   }, []);
 
+
+
+//handles the latitude value and longitude value
   const handleLatitudeChange = (e) => {
     setLatitude(e.target.value);
   };
@@ -76,14 +87,20 @@ function Map() {
     setLongitude(e.target.value);
   };
 
+
+
+//the function that runs when a user clicks add marker
   const handleMarkerClick = () => {
     if (userLocation) {
+      console.log(userLocation, "wooooof")
       setMarkerPosition(userLocation);
     } else if (latitude && longitude) {
+      console.log(latitude , longitude , "whats thiiis")
       const position = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
       };
+      console.log(position)
       setMarkerPosition(position);
     }
   };
@@ -117,7 +134,7 @@ function Map() {
       <button onClick={handleMarkerClick}>Add Marker</button>
       <button onClick={getUserLocation}>Get Current Location</button>
 
-      <LoadScript googleMapsApiKey="AIzaSyBo8JkbyffU2Dbv8_MDEsvcOzymPyEL0xQ">
+      <LoadScript googleMapsApiKey={apiKey}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={markerPosition}

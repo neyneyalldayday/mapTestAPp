@@ -1,4 +1,4 @@
-import { useState } from "react";
+import  { useState } from "react";
 import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
 
 const containerStyle = {
@@ -6,10 +6,12 @@ const containerStyle = {
   height: "400px",
 };
 
-export default function Map() {
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+function Map() {
+  const [latitude, setLatitude] = useState("29.7255333");
+  const [longitude, setLongitude] = useState("-98.4946");
   const [markerPosition, setMarkerPosition] = useState(null);
+
+
 
   const handleLatitudeChange = (e) => {
     setLatitude(e.target.value);
@@ -30,7 +32,8 @@ export default function Map() {
   };
 
   return (
-    <div>
+    <div className="map-container">
+     
       <div>
         <label htmlFor="latitude">Latitude:</label>
         <input
@@ -50,7 +53,7 @@ export default function Map() {
         />
       </div>
       <button onClick={handleMarkerClick}>Add Marker</button>
-      <LoadScript googleMapsApiKey="AIzaSyBo8JkbyffU2Dbv8_MDEsvcOzymPyEL0xQ">
+      <LoadScript googleMapsApiKey='AIzaSyBo8JkbyffU2Dbv8_MDEsvcOzymPyEL0xQ'>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={markerPosition}
@@ -62,3 +65,6 @@ export default function Map() {
     </div>
   );
 }
+
+export default Map;
+

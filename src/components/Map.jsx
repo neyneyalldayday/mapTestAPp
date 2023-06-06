@@ -10,15 +10,17 @@ function Map() {
   const [latitude, setLatitude] = useState("29.7255333");
   const [longitude, setLongitude] = useState("-98.4946");
   const [markerPosition, setMarkerPosition] = useState(null);
+
   const [userLocation, setUserLocation] = useState(null);
+  const [showShareLink, setShowShareLink] = useState(false);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
+          setLatitude(latitude.toString());
+          setLongitude(longitude.toString());
           setUserLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
@@ -42,25 +44,26 @@ function Map() {
     setLongitude(e.target.value);
   };
 
-  // const handleMarkerClick = () => {
-  //   if (latitude && longitude) {
-  //     const position = {
-  //       lat: parseFloat(latitude),
-  //       lng: parseFloat(longitude),
-  //     };
-  //     setMarkerPosition(position);
-  //   }
-  // };
   const handleMarkerClick = () => {
-    if (userLocation) {
-      setMarkerPosition(userLocation);
-    } else if (latitude && longitude) {
+    if (latitude && longitude) {
       const position = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
       };
+
       setMarkerPosition(position);
     }
+  };
+
+  const generateShareLink = () => {
+    const baseUrl = window.location.href.split("?")[0];
+    const shareUrl = `${baseUrl}?lat=${latitude}&lon${longitude}`;
+
+    return shareUrl;
+  }
+
+  const handleShareButtonClick = () => {
+    setShowShareLink(true);
   };
 
   return (
@@ -94,7 +97,14 @@ function Map() {
         >
           {markerPosition && <Marker position={markerPosition} />}
         </GoogleMap>
-      </LoadScript>
+      </LoadScript>     
+      <button onClick={handleShareButtonClick}>Share</button>
+      {showShareLink && (
+        <div>
+          <p>Share this location</p>
+          <input type="text" value={generateShareLink()} readOnly />
+        </div>
+      )}
     </div>
   );
 }

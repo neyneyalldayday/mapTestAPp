@@ -17,4 +17,10 @@
 
 .map-container{
 height: 70vh;
+
+}
+
+
+.map{
+  background-image: aqua;
 }

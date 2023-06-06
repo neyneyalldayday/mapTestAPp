@@ -84,16 +84,15 @@ function Map() {
   //the function that runs when a user clicks add marker
   const handleMarkerClick = () => {
     if (userLocation) {
-      console.log(userLocation, "wooooof");
+     
       setMarkerPosition(userLocation);
     } else if (latitude && longitude) {
-      console.log(latitude, longitude, "whats thiiis");
+  
       const position = {
         lat: parseFloat(latitude),
         lng: parseFloat(longitude),
       };
-      console.log(position);
-      setMarkerPosition(position);
+           setMarkerPosition(position);
     }
   };
 

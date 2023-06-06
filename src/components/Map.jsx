@@ -11,7 +11,7 @@ function Map() {
   const [longitude, setLongitude] = useState("-98.4946");
   const [markerPosition, setMarkerPosition] = useState(null);
 
-  const [userLocation, setUserLocation] = useState(null);
+  
   const [showShareLink, setShowShareLink] = useState(false);
 
   const getUserLocation = () => {
@@ -21,7 +21,7 @@ function Map() {
           const { latitude, longitude } = position.coords;
           setLatitude(latitude.toString());
           setLongitude(longitude.toString());
-          setUserLocation({ lat: latitude, lng: longitude });
+          setMarkerPosition({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.log("Error getting user location:", error);
